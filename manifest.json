@@ -1,0 +1,28 @@
+{
+	"manifest_version": 2,
+	"name": "Sample Extension",
+	"description": "This extension demonstrates chrome.windows.create not accepting state.",
+	"version": "1.0",
+	"background": {
+		"page": "background.html"
+	},
+	"browser_action": {
+		"default_popup": "foreground.html"
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://www.youtube.com/streamus.playground"],
+			"all_frames": true,
+			"js": ["jquery.js", "loader.js", "testsender.js"]
+		}
+	],
+	"web_accessible_resources": [
+		"html5player.js",
+		"embedplayer.js",
+		"inline.js",
+		"inline2.js",
+		"inline3.js",
+		"test.webm"
+	],
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google.com/ https://s.ytimg.com/;  object-src 'self'"
+}
