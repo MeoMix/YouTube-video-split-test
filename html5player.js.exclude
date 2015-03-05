@@ -1,12 +1,3 @@
-window.addEventListener('message', function (message) {
-    if (message.data == 'playVideo') {
-        window.playVideo();
-    }
-    else if (message.data == 'pauseVideo') {
-        window.pauseVideo();
-    }
-});
-
 (function() {
     var f, aa = aa || {},
         m = this;
@@ -9948,13 +9939,7 @@ window.addEventListener('message', function (message) {
         Hq(this, "channelSubscribed", u);
         Hq(this, "channelUnsubscribed", u);
 		
-		window.playVideo = function(){
-			this.Pf["playVideo"]();
-		}.bind(this)
-		
-		window.pauseVideo = function(){
-			this.Pf["pauseVideo"]();
-		}.bind(this)
+		window.playVideo = this.Pf["playVideo"] = x(this.Cn, this);
     }
 
     z(Gq, R);
@@ -11062,6 +11047,8 @@ window.addEventListener('message', function (message) {
     function Rs(a) {
         T.call(this);
         this.j = a;
+		debugger;
+		console.log('hihih');
         this.Rm && (a = dk("yt-html5-player-modules::" + this.Rm)) && (this.W = new Ri(a));
     }
 

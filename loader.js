@@ -26,6 +26,6 @@ var loaderPort = chrome.runtime.connect({
     name: 'loader'
 });
 
-window.addEventListener('message', function(request){
+window.addEventListener('message', function (request) {
 	loaderPort.postMessage(request.data);
 });

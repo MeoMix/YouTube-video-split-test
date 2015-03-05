@@ -13,7 +13,7 @@
 		{
 			"matches": ["https://www.youtube.com/streamus.playground"],
 			"all_frames": true,
-			"js": ["jquery.js", "loader.js", "testsender.js"]
+			"js": ["jquery.js", "loader.js"]
 		}
 	],
 	"web_accessible_resources": [
@@ -21,8 +21,7 @@
 		"embedplayer.js",
 		"inline.js",
 		"inline2.js",
-		"inline3.js",
-		"test.webm"
+		"inline3.js"
 	],
 	"content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google.com/ https://s.ytimg.com/;  object-src 'self'"
 }

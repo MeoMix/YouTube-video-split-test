@@ -3,3 +3,7 @@ body {
     width: 640px;
 	height: 360px;
 }
+
+video {
+    border: 2px solid blue;
+}

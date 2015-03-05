@@ -1,11 +1,27 @@
 <html>
-	<head>
-		<link rel="stylesheet" href="foreground.css">
-	</head>
-	<body>
-		<iframe src="https://www.youtube.com/streamus.playground"></iframe>
-		
-		<video controls autoplay height="115" width="300" id='streamusVideo'></video>
-		<script src="foreground.js"></script>
-	</body>
+    <head>
+        <title>Foreground</title>
+        <link rel="stylesheet" href="foreground.css">
+    </head>
+    <body>
+        Click the Attach button to attach objectURL to video src.
+        Play/Pause to control background video player.
+
+        <video height="115" width="300" id='streamusVideo'></video>
+        <video height="115" width="300" id='streamusVideo2'></video>
+
+        <button id="attach1Button">
+            Attach Video 1
+        </button>
+        
+        <button id="playButton">
+            Play
+        </button>
+        
+        <button id="pauseButton">
+            Pause
+        </button>
+
+        <script src="foreground.js"></script>
+    </body>
 </html>
