@@ -4,6 +4,10 @@ var queue = [];
 
 window.mediaSource = ms;
 
+var objectURL = window.URL.createObjectURL(ms);
+var video = document.getElementById('streamusVideo');
+video.src = objectURL;
+
 ms.addEventListener('sourceopen', function () {
     console.log('source is open');
     
@@ -52,38 +56,23 @@ ms.addEventListener('error', function (e) {
 
 var contentWindow = document.getElementById('playground').contentWindow;
 
-chrome.runtime.onConnect.addListener(function (port) {
-    if (port.name === 'loader') {
-        console.log('port connected');
+window.addEventListener('message', function (transportData) {
+	if (!transportData.data)
+		return;
 
-        port.onMessage.addListener(function (transportData) {
-            if (!transportData.data)
-                return;
-
-            for (var index = 0; index < transportData.data.length; index++) {
-                var data = new Uint8Array(atob(transportData.data[index]).split("").map(function (c) {
-                    return c.charCodeAt(0);
-                }));
-
-                console.log('RECEIVED:', data.buffer.byteLength);
-                console.log('sourceBuffer:', sourceBuffer);
-
-                if (sourceBuffer.updating || queue.length > 0) {
-                    console.log('queueing data');
-                    queue.push(data);
-                } else {
-                    console.log('appending data to buffer');
-                    sourceBuffer.appendBuffer(data);
-                }
-            }
-        });
-    }
+	if (sourceBuffer.updating || queue.length > 0) {
+		queue.push(transportData.data);
+	} else {
+		sourceBuffer.appendBuffer(transportData.data);
+	}
 });
 
-window.play = function() {
+window.play = function () {
     contentWindow.postMessage('playVideo', '*');
+    video.play();
 };
 
 window.pause = function() {
     contentWindow.postMessage('pauseVideo', '*');
+    video.pause();
 };

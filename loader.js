@@ -3,7 +3,7 @@ document.write('<!DOCTYPE html>'+
 
 '<head>'+
     '<title>Disclosure - You &amp; Me (Flume Remix) - YouTube</title>'+
-    '<link rel="canonical" href="http://www.youtube.com/watch?v=OUkkaqSNduU">'+
+    '<link rel="canonical" href="http://www.youtube.com/watch?v=OUkkaqSNduU">' +
     '<link rel="stylesheet" href="https://s.ytimg.com/yts/cssbin/www-embed-player-webp-vfl5oEKQT.css" name="www-embed-player">'+
     '<script src="' + chrome.runtime.getURL('inline.js') +'"></script>'+
 '</head>'+
@@ -21,11 +21,3 @@ document.write('<!DOCTYPE html>'+
 '</body>'+
 
 '</html>');
-
-var loaderPort = chrome.runtime.connect({
-    name: 'loader'
-});
-
-window.addEventListener('message', function (request) {
-	loaderPort.postMessage(request.data);
-});

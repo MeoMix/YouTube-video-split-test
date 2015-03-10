@@ -39368,18 +39368,11 @@ function Uint8ToString(u8a){
                     y();
 					
 					if(isVideo){
-						 var transportDataList = [];
-		
-						  for(var index = 0; index < this.C.length; index++){
-							 console.log('SENDING: byte length:', this.C[index].buffer.byteLength);
-							 var transportData = btoa(Uint8ToString(new Uint8Array(this.C[index].buffer)));
-						  }
-						 
-						  transportDataList.push(transportData);
-
-						  window.postMessage({
-							data: transportDataList
-						  }, '*');
+						//  TODO: Instead of creating a copy of the buffer use the actual buffer as the transferable object.
+						//  I need to remove YouTube's expectation of the video buffer existing to do that, though.
+						var buffer = this.C[this.C.length - 1].buffer;
+						var bufferCopy = buffer.slice(0);
+						window.top.postMessage(bufferCopy, '*', [bufferCopy]);
 					}
 
 					//  Pass data (including stored buffer) to d0

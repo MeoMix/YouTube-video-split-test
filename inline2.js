@@ -77,4 +77,5 @@ yt.setConfig('PLAYER_CONFIG', {
 	"sts": 16489,
 	"url_v9as2": "https:\/\/s.ytimg.com\/yts\/swfbin\/player-vflMzoht1\/cps.swf"
 });
+
 writeEmbed();
