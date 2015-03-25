@@ -1,30 +1,59 @@
 var backgroundPage = chrome.extension.getBackgroundPage();
 var objectURL = window.URL.createObjectURL(backgroundPage.mediaSource);
 var video = document.getElementById('streamusVideo');
-video.src = objectURL;
+var backgroundVideo = backgroundPage.backgroundVideo;
+var appendedBufferCount = 0;
 
 var playButton = document.getElementById('playButton');
 playButton.addEventListener('click', function () {
-    //video.play();
+    backgroundVideo.play();
+    video.play();
+    video.currentTime = backgroundVideo.currentTime;
     backgroundPage.play();
 });
 
 var pauseButton = document.getElementById('pauseButton');
 pauseButton.addEventListener('click', function () {
-    //video.pause();
+    backgroundVideo.pause();
     backgroundPage.pause();
+    video.pause();
 });
 
-var canvas = document.getElementById('streamusCanvas');
-var backgroundVideo = backgroundPage.document.getElementById('streamusVideo');
-var context = canvas.getContext('2d');
-context.drawImage(backgroundVideo, 0, 0, 300, 115);
-function sync() {
-    context.drawImage(backgroundVideo, 0, 0, 300, 115);
+var attachButton = document.getElementById('attachButton');
+attachButton.addEventListener('click', function () {
+    sourceBuffer.appendBuffer(backgroundPage.buffers[appendedBufferCount]);
+    appendedBufferCount++;
+    video.currentTime = backgroundVideo.currentTime;
+    
+    if (!backgroundVideo.paused) {
+        video.play();
+    }
+});
 
-    //video.currentTime(backgroundVideo.currentTime());
+var ms = new MediaSource();
+var sourceBuffer;
 
-    window.requestAnimationFrame(sync);
-}
+ms.addEventListener('sourceopen', function () {
+    console.log('source is open');
 
-sync();
+    sourceBuffer = ms.addSourceBuffer('video/webm; codecs="vp9"');
+    sourceBuffer.addEventListener('update', function () {
+        if (backgroundPage.buffers.length > 0 && !sourceBuffer.updating) {
+            console.log('updating');
+            var buffer = backgroundPage.buffers[appendedBufferCount];
+            appendedBufferCount++;
+            sourceBuffer.appendBuffer(buffer);
+        } else if (backgroundPage.buffers.length === 0) {
+            console.log('skipping update - backgroundPage.buffers empty');
+        } else {
+            console.log('skipping update - sourceBuffer is updating');
+        }
+    });
+
+}, false);
+
+setTimeout(function() {
+    var objectURL = window.URL.createObjectURL(ms);
+    video.src = objectURL;
+});
+

@@ -4,9 +4,14 @@ var queue = [];
 
 window.mediaSource = ms;
 
-var objectURL = window.URL.createObjectURL(ms);
 var video = document.getElementById('streamusVideo');
+var objectURL = window.URL.createObjectURL(ms);
 video.src = objectURL;
+window.backgroundVideo = video;
+
+//  I might be able to keep a queue of all the appended buffers so when I want to spawn a new video element I can quickly re-append and catch up?
+var buffers = [];
+window.buffers = buffers;
 
 ms.addEventListener('sourceopen', function () {
     console.log('source is open');
@@ -15,44 +20,15 @@ ms.addEventListener('sourceopen', function () {
     sourceBuffer.addEventListener('update', function () {
         if (queue.length > 0 && !sourceBuffer.updating) {
             console.log('updating');
-            sourceBuffer.appendBuffer(queue.shift());
+            var buffer = queue.shift();
+            sourceBuffer.appendBuffer(buffer);
         } else if (queue.length === 0) {
             console.log('skipping update - queue empty');
         } else {
             console.log('skipping update - sourceBuffer is updating');
         }
     });
-
-    sourceBuffer.addEventListener('updatestart', function (e) {
-        console.log('updatestart: ' + ms.readyState + 'buffered length: ' + e.currentTarget.buffered.length, e);
-    });
-    sourceBuffer.addEventListener('update', function (e) {
-        console.log('update: ' + ms.readyState + 'buffered length: ' + e.currentTarget.buffered.length, e);
-    });
-    sourceBuffer.addEventListener('updateend', function (e) {
-        console.log('updateend: ' + ms.readyState + 'buffered length: ' + e.currentTarget.buffered.length, e);
-    });
-    sourceBuffer.addEventListener('error', function (e) {
-        console.error('error: ' + ms.readyState, e);
-    });
-    sourceBuffer.addEventListener('abort', function (e) {
-        console.error('abort: ' + ms.readyState, e);
-    });
 }, false);
-
-
-ms.addEventListener('sourceopen', function (e) {
-    console.log('sourceopen: ' + ms.readyState, e);
-});
-ms.addEventListener('sourceended', function (e) {
-    console.log('sourceended: ' + ms.readyState, e);
-});
-ms.addEventListener('sourceclose', function (e) {
-    console.warn('sourceclose: ' + ms.readyState, e);
-});
-ms.addEventListener('error', function (e) {
-    console.error('error: ' + ms.readyState, e);
-});
 
 var contentWindow = document.getElementById('playground').contentWindow;
 
@@ -60,10 +36,12 @@ window.addEventListener('message', function (transportData) {
 	if (!transportData.data)
 		return;
 
+	buffers.push(transportData.data);
+
 	if (sourceBuffer.updating || queue.length > 0) {
-		queue.push(transportData.data);
+	    queue.push(transportData.data);
 	} else {
-		sourceBuffer.appendBuffer(transportData.data);
+	    sourceBuffer.appendBuffer(transportData.data);
 	}
 });
 

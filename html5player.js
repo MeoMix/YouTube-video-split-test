@@ -23191,7 +23191,26 @@ window.addEventListener('message', function (message) {
     }
 
     function JG(a) {
-        return a.ca ? new DataView(a.buffer, a.ca.start, a.ca.length) : new DataView(a.buffer);
+		var dataView;
+
+		if(a.ca){
+			console.log('a', a, a.bufferByteLength);
+			//debugger;
+			//var testBuffer = new ArrayBuffer(a.buffer.byteLength);
+			//console.log('a', a.bufferByteLength);
+			//console.log('lengths:', a.buffer.byteLength, testBuffer.byteLength);
+			if(a.buffer.byteLength === 0){
+				dataView = new DataView(new ArrayBuffer(a.bufferByteLength), a.ca.start, a.ca.length)
+			}
+		    else {
+				dataView = new DataView(a.buffer, a.ca.start, a.ca.length)
+			}
+		}
+		else{
+			dataView = new DataView(a.buffer)
+		}
+		
+        return dataView;
     }
 
     function hH(a, b) {
@@ -38933,6 +38952,7 @@ window.addEventListener('message', function (message) {
 
     G_.prototype.Q = function(a) {
         if (4 == a.info.type) {
+			if(a.buffer.byteLength === 0) return;
             var b = a.info.j.Hr(a);
             a.info == this.o && (this.o = bb(b).info);
             D(b, this.Q, this);
@@ -39372,7 +39392,16 @@ function Uint8ToString(u8a){
 						//  I need to remove YouTube's expectation of the video buffer existing to do that, though.
 						var buffer = this.C[this.C.length - 1].buffer;
 						var bufferCopy = buffer.slice(0);
+						//  TODO: Why does this get lost, but -2 propagates to line 23197?
+						for(var i = 0; i < this.C.length; i++){
+							this.C[i].bufferByteLength = this.C[i].buffer.byteLength;
+						}
+						//debugger;
+						//window.top.postMessage(buffer, '*', [buffer]);
 						window.top.postMessage(bufferCopy, '*', [bufferCopy]);
+					}
+					else{
+						console.log('isNotVideo');
 					}
 
 					//  Pass data (including stored buffer) to d0
