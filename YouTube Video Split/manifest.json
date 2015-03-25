@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Sample Extension",
-	"description": "This extension demonstrates chrome.windows.create not accepting state.",
+	"description": "Splitting YouTubes video",
 	"version": "1.0",
 	"background": {
 		"page": "background.html"
