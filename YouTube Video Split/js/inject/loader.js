@@ -5,7 +5,7 @@ document.write('<!DOCTYPE html>'+
     '<title>Disclosure - You &amp; Me (Flume Remix) - YouTube</title>'+
     '<link rel="canonical" href="http://www.youtube.com/watch?v=OUkkaqSNduU">' +
     '<link rel="stylesheet" href="https://s.ytimg.com/yts/cssbin/www-embed-player-webp-vfl5oEKQT.css" name="www-embed-player">'+
-    '<script src="' + chrome.runtime.getURL('inline.js') +'"></script>'+
+    '<script src="' + chrome.runtime.getURL('js/inject/inline.js') +'"></script>'+
 '</head>'+
 
 
@@ -14,10 +14,10 @@ document.write('<!DOCTYPE html>'+
     '<div id="player-unavailable" class="ytp-error hid">'+
         '<div id="unavailable-submessage" class="ytp-error-content"></div>'+
     '</div>'+
-    '<script src="' + chrome.runtime.getURL('embedplayer.js') + '" type="text/javascript" name="www-embed-player/www-embed-player"></script>'+
-	'<script src="' + chrome.runtime.getURL('html5player.js') + '" type="text/javascript" name="www-embed-player/www-embed-player"></script>'+
-    '<script src="' + chrome.runtime.getURL('inline2.js') +'"></script>'+
-    '<script src="' + chrome.runtime.getURL('inline3.js') +'"></script>'+
+    '<script src="' + chrome.runtime.getURL('js/inject/embedplayer.js') + '" type="text/javascript" name="www-embed-player/www-embed-player"></script>'+
+	'<script src="' + chrome.runtime.getURL('js/inject/html5player.js') + '" type="text/javascript" name="www-embed-player/www-embed-player"></script>'+
+    '<script src="' + chrome.runtime.getURL('js/inject/inline2.js') +'"></script>'+
+    '<script src="' + chrome.runtime.getURL('js/inject/inline3.js') +'"></script>'+
 '</body>'+
 
 '</html>');

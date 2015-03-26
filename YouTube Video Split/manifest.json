@@ -9,19 +9,17 @@
 	"browser_action": {
 		"default_popup": "foreground.html"
 	},
-	"content_scripts": [
-		{
-			"matches": ["https://www.youtube.com/streamus.playground"],
-			"all_frames": true,
-			"js": ["loader.js"]
-		}
-	],
+	"content_scripts": [{
+		"matches": ["https://www.youtube.com/streamus.playground"],
+		"all_frames": true,
+		"js": ["js/inject/loader.js"]
+	}],
 	"web_accessible_resources": [
-		"html5player.js",
-		"embedplayer.js",
-		"inline.js",
-		"inline2.js",
-		"inline3.js"
+		"js/inject/html5player.js",
+		"js/inject/embedplayer.js",
+		"js/inject/inline.js",
+		"js/inject/inline2.js",
+		"js/inject/inline3.js"
 	],
 	"content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google.com/ https://s.ytimg.com/;  object-src 'self'"
 }
