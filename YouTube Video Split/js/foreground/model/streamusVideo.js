@@ -1,7 +1,7 @@
 ﻿define(function(require) {
     'use strict';
 
-    var StreamusMediaSource = require('model/streamusMediaSource');
+    var StreamusMediaSource = require('foreground/model/streamusMediaSource');
 
     var StreamusVideo = Backbone.Model.extend({
         defaults: {

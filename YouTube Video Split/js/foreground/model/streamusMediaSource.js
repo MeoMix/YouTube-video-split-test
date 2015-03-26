@@ -1,7 +1,7 @@
 ﻿define(function(require) {
     'use strict';
 
-    var StreamusSourceBuffer = require('model/streamusSourceBuffer');
+    var StreamusSourceBuffer = require('foreground/model/streamusSourceBuffer');
 
     var StreamusMediaSource = Backbone.Model.extend({
         defaults: {

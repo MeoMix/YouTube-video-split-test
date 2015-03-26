@@ -57,34 +57,42 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".gitattributes" />
-    <Content Include=".gitignore" />
     <Content Include="background.html" />
-    <Content Include="background.js" />
-    <None Include="chrome-api-vsdoc.js" />
+    <Content Include="js\background\background.js" />
+    <None Include="js\thirdParty\chrome-api-vsdoc.js" />
     <Content Include="foreground.css" />
     <Content Include="foreground.html" />
-    <Content Include="foreground.js" />
-    <Content Include="inline.js" />
-    <Content Include="inline2.js" />
-    <Content Include="inline3.js" />
-    <Content Include="jquery.js" />
-    <Content Include="loader.js" />
-    <Content Include="sdfdfaaaa.txt" />
-    <Content Include="Web.config" />
+    <Content Include="js\background\main.js" />
+    <Content Include="js\background\model\player.js" />
+    <Content Include="js\background\model\youTubePlayer.js" />
+    <Content Include="js\background\model\youTubePlayerAPI.js" />
+    <Content Include="js\background\view\youTubePlayerView.js" />
+    <Content Include="js\common\enum\playerState.js" />
+    <Content Include="js\common\enum\youTubePlayerError.js" />
+    <Content Include="js\common\enum\youTubePlayerState.js" />
+    <Content Include="js\foreground\foreground.js" />
+    <Content Include="js\inject\inline.js" />
+    <Content Include="js\inject\inline2.js" />
+    <Content Include="js\inject\inline3.js" />
+    <Content Include="js\inject\loader.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="js\foreground\main.js" />
+    <Content Include="js\foreground\model\streamusMediaSource.js" />
+    <Content Include="js\foreground\model\streamusSourceBuffer.js" />
+    <Content Include="js\foreground\model\streamusVideo.js" />
+    <Content Include="js\inject\youTubeIFrameInject.js" />
+    <Content Include="js\thirdParty\backbone.js" />
+    <Content Include="js\thirdParty\backbone.marionette.js" />
+    <Content Include="js\thirdParty\jquery.js" />
+    <Content Include="js\thirdParty\lodash.js" />
+    <Content Include="js\thirdParty\require.js" />
     <Content Include="manifest.json" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

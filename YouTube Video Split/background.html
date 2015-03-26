@@ -6,10 +6,11 @@
     </head>
 	
     <body>
-        <iframe id="playground" src="https://www.youtube.com/streamus.playground"></iframe>
+<!--        <iframe id="playground" src="https://www.youtube.com/streamus.playground"></iframe>-->
         
         <video height="115" width="300" id='streamusVideo'></video>
     </body>
     
-    <script src="js/background.js"></script>
+        <!--Load RequireJS and then go to js/background/main to start-->
+        <script data-main='js/background/main' src='js/thirdParty/require.js' defer></script>
 </html>

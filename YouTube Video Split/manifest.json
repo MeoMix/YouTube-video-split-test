@@ -13,6 +13,10 @@
 		"matches": ["https://www.youtube.com/streamus.playground"],
 		"all_frames": true,
 		"js": ["js/inject/loader.js"]
+	}, {
+		"matches": ["*://*.youtube.com/embed/*?enablejsapi=1&origin=chrome-extension:*"],
+		"all_frames": true,
+		"js": ["js/thirdParty/lodash.js", "js/thirdParty/jquery.js", "js/inject/youTubeIFrameInject.js"]
 	}],
 	"web_accessible_resources": [
 		"js/inject/html5player.js",
@@ -20,6 +24,11 @@
 		"js/inject/inline.js",
 		"js/inject/inline2.js",
 		"js/inject/inline3.js"
+	],
+	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
+		"*://*.youtube.com/*"
 	],
 	"content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google.com/ https://s.ytimg.com/;  object-src 'self'"
 }

@@ -21,5 +21,5 @@ define(function(require) {
 
     require('backbone.marionette');
 
-    require(['foreground']);
+    require(['background/background']);
 });
