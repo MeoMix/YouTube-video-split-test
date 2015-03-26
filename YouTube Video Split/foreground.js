@@ -4,7 +4,9 @@ var backgroundVideo = backgroundPage.video;
 var streamusVideo = new StreamusVideo();
 streamusVideo.initialize();
 
-if (!backgroundVideo.paused) {
+if (backgroundVideo.paused) {
+    streamusVideo.setCurrentTime(backgroundVideo.currentTime);
+} else {
     streamusVideo.play(backgroundVideo.currentTime);
 }
 
@@ -18,6 +20,18 @@ document.getElementById('pauseButton').addEventListener('click', function () {
     streamusVideo.pause();
 });
 
+document.getElementById('loadFirstVideo').addEventListener('click', function() {
+    streamusVideo.reset();
+    backgroundPage.loadVideoById('yEitrZU-nCw');
+    streamusVideo.play(0);
+});
+
+document.getElementById('loadSecondVideo').addEventListener('click', function() {
+    streamusVideo.reset();
+    backgroundPage.loadVideoById('jjx2oc2NRzA');
+    streamusVideo.play(0);
+});
+
 function StreamusVideo() {
     return {
         _video: null,
@@ -28,6 +42,7 @@ function StreamusVideo() {
             this._mediaSource = new StreamusMediaSource();
             this._mediaSource.initialize();
             
+            //  TODO: Unbind this when removing a Video.
             //  TODO: Does the fact that I need to call this mean I have a memory leak?
             window.onunload = this._onWindowUnload.bind(this);
             //  TODO: This is a slow, blocking operation. setTimeout to allow the page to open smoothly.
@@ -35,12 +50,24 @@ function StreamusVideo() {
         },
         
         play: function(currentTime) {
-            this._video.currentTime = currentTime;
+            this.setCurrentTime(currentTime);
             this._video.play();
+        },
+        
+        setCurrentTime: function(currentTime) {
+            this._video.currentTime = currentTime;
         },
         
         pause: function() {
             this._video.pause();
+        },
+        
+        reset: function() {
+            this.pause();
+            this._mediaSource.detachBuffer();
+            this._mediaSource.attachBuffer();
+
+            this._setSrc();
         },
         
         _onWindowUnload: function() {
@@ -61,7 +88,6 @@ function StreamusMediaSource() {
 
         initialize: function() {
             this._source = new window.MediaSource();
-            this._sourceBuffer = new StreamusSourceBuffer();
             
             //  IMPORTANT: Prefer binding like this rather than using .bind(this) inline because bind will return a new function.
             //  This will break unobserve because it expects to be given a reference to the original function.
@@ -74,10 +100,23 @@ function StreamusMediaSource() {
             this._source.addEventListener('sourceclose', this._onSourceClose);
             this._source.addEventListener('sourceended', this._onSourceEnded);
             this._source.addEventListener('error', this._onSourceError);
+
+            this.attachBuffer();
+        },
+        
+        attachBuffer: function() {
+            if (this._sourceBuffer === null) {
+                this._sourceBuffer = new StreamusSourceBuffer();
+            } else {
+                console.error('sourceBuffer is already attached');
+            }
         },
         
         detachBuffer: function() {
+            //  This needs to be called before detach because detach sets sourceBuffer to null.
+            this._source.removeSourceBuffer(this._sourceBuffer._buffer);
             this._sourceBuffer.detach();
+            this._sourceBuffer = null;
         },
         
         getObjectURL: function() {
@@ -139,6 +178,7 @@ function StreamusSourceBuffer() {
         
         detach: function() {
             if (this._attached) {
+                //  TODO: Probably want to clean up observeHandler, too.
                 this._buffer.removeEventListener('update', this._onUpdate);
                 this._buffer = null;
                 this._attached = false;

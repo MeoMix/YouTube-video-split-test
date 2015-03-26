@@ -31,13 +31,28 @@ window.addEventListener('message', function (transportData) {
 	}
 });
 
-var contentWindow = document.getElementById('playground').contentWindow;
+var playground = document.getElementById('playground');
+var contentWindow = playground.contentWindow;
+
 window.play = function () {
-    contentWindow.postMessage('playVideo', '*');
+    contentWindow.postMessage({
+        method: 'playVideo'
+    }, '*');
     video.play();
 };
 
 window.pause = function() {
-    contentWindow.postMessage('pauseVideo', '*');
+    contentWindow.postMessage({
+        method: 'pauseVideo'
+    }, '*');
     video.pause();
+};
+
+window.loadVideoById = function(videoId) {
+    buffers.length = 0;
+
+    contentWindow.postMessage({
+        method: 'loadVideoById',
+        videoId: videoId
+    }, '*');
 };
