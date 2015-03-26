@@ -10048,7 +10048,7 @@ window.addEventListener('message', function (message) {
         Oq(this.app);
     };
     f.Cn = function () {
-        console.log('hi');
+        //console.log('hi');
         Jq(this.app, !0, this.playerType);
         Pq(this.app, this.playerType);
     };
@@ -23194,7 +23194,7 @@ window.addEventListener('message', function (message) {
 		var dataView;
 
 		if(a.ca){
-			console.log('a', a, a.bufferByteLength);
+			//console.log('a', a, a.bufferByteLength);
 			//debugger;
 			//var testBuffer = new ArrayBuffer(a.buffer.byteLength);
 			//console.log('a', a.bufferByteLength);
@@ -32038,7 +32038,7 @@ window.addEventListener('message', function (message) {
     }
 
     ST.prototype.Zg = function(a) {
-	console.log('hihi');
+	//console.log('hihi');
         this.W = a;
     };
     ST.prototype.getAd = function() {
@@ -32352,7 +32352,7 @@ window.addEventListener('message', function (message) {
     ;
 
     function pR(a, b, c, d, e, g, h, k, l, p, r, v, C, V, O, fa) {
-	console.log('hihi');
+	//console.log('hihi');
         U.call(this);
         this.V = a;
         this.Q = b;
@@ -39333,7 +39333,7 @@ function Uint8ToString(u8a){
                 } else {
                     c = this.info.j;
                     if (1 == c.length && !c[0].ca) {
-						console.log('i am here');
+						//console.log('i am here');
                         var d = c[0],
                             e = kG(0, b.byteLength),
                             d = new zG(d.type, d.j, e, d.B, d.startTime, d.duration, d.A, e.length, d.G);
@@ -39401,7 +39401,7 @@ function Uint8ToString(u8a){
 						window.top.postMessage(bufferCopy, '*', [bufferCopy]);
 					}
 					else{
-						console.log('isNotVideo');
+						//console.log('isNotVideo');
 					}
 
 					//  Pass data (including stored buffer) to d0
@@ -52026,7 +52026,7 @@ function Uint8ToString(u8a){
     }
 
     f.click = function(a) {
-        console.log('click?');
+        //console.log('click?');
         if (N8(this, a)) {
             var b = N8(this, a),
                 c = pe(b.activeButtonNode || b.parentNode, lx(this));
