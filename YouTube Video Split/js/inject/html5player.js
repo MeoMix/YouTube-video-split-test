@@ -1,15 +1,3 @@
-window.addEventListener('message', function (message) {
-    if (message.data.method == 'playVideo') {
-        window.playVideo();
-    }
-    else if (message.data.method == 'pauseVideo') {
-        window.pauseVideo();
-    }
-	else if(message.data.method == 'loadVideoById') {
-		window.loadVideoById(message.data.videoId);
-	}
-});
-
 (function() {
     var f, aa = aa || {},
         m = this;
@@ -9949,10 +9937,6 @@ window.addEventListener('message', function (message) {
         Hq(this, "setMinimized", this.BE);
         Hq(this, "channelSubscribed", u);
         Hq(this, "channelUnsubscribed", u);
-		
-		window.playVideo = this.Pf["playVideo"];
-		window.pauseVideo = this.Pf["pauseVideo"];
-		window.loadVideoById = this.Pf["loadVideoById"];
     }
 
     z(Gq, R);
@@ -39239,6 +39223,7 @@ window.addEventListener('message', function (message) {
             this.o = LC(this.info);
             this.B && this.o.set("playerretry", this.B.toString());
             var a = KC(this.o);
+			//debugger;
             this.j = new XMLHttpRequest;
             try {
                 this.j.open("GET", a);
@@ -39294,7 +39279,7 @@ window.addEventListener('message', function (message) {
         var b = this.j;
         if (!this.ga() && a.target == b) {
 			var isVideo = b.responseURL.indexOf('webm') !== -1;
-	
+			
             this.A && (M(this.A), this.A = NaN);
             this.J = b.status;
             a = !1;
@@ -39352,6 +39337,7 @@ window.addEventListener('message', function (message) {
                     this.C = d;
                     c = this.timing;
                     d = y();
+					var saved = b;
                     b = b.byteLength;
 					
 					if(c.I){
@@ -39376,21 +39362,16 @@ window.addEventListener('message', function (message) {
 					if(isVideo){
 						//  TODO: Instead of creating a copy of the buffer use the actual buffer as the transferable object.
 						//  I need to remove YouTube's expectation of the video buffer existing to do that, though.
-						var buffer = this.C[this.C.length - 1].buffer;
-						var bufferCopy = buffer.slice(0);
+						//var buffer = this.C[this.C.length - 1].buffer;
+						//var bufferCopy = saved.slice(0);
 						//  TODO: Why does this get lost, but -2 propagates to line 23197?
-						for(var i = 0; i < this.C.length; i++){
-							this.C[i].bufferByteLength = this.C[i].buffer.byteLength;
-						}
-						//debugger;
-						//window.top.postMessage(buffer, '*', [buffer]);
-						var message = {
-							buffer: bufferCopy
-						};
-						window.top.postMessage(message, '*', [message.buffer]);
-					}
-					else{
-						//console.log('isNotVideo');
+						// for(var i = 0; i < this.C.length; i++){
+							// this.C[i].bufferByteLength = this.C[i].buffer.byteLength;
+						// }
+						//var message = {
+						//	buffer: bufferCopy
+						//};
+						//window.top.postMessage(message, '*', [message.buffer]);
 					}
 
 					//  Pass data (including stored buffer) to d0

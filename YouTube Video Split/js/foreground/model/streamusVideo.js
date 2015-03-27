@@ -16,24 +16,28 @@
             this.set('video', document.getElementById('streamusVideo'));
             this.set('mediaSource', new StreamusMediaSource());
 
+            this.listenToOnce(this.get('mediaSource'), 'open', function() {
+                this.listenToOnce(player, 'change:currentTimeHighPrecision', function(model, currentTimeHighPrecision) {
+                    this._syncState(player.get('state'), currentTimeHighPrecision);
+                });
+
+                player.getCurrentTimeHighPrecision();
+            });
+
             //  TODO: Unbind this when removing a Video.
             //  TODO: Does the fact that I need to call this mean I have a memory leak?
             window.onunload = this._onWindowUnload.bind(this);
 
+            this._setSrc();
             var player = this.get('player');
-            //  TODO: This is a slow, blocking operation. setTimeout to allow the page to open smoothly.
-            setTimeout(function() {
-                this._setSrc();
-                this._syncState(player.get('state'), player.get('currentTimeHighPrecision'));
-            }.bind(this));
-            
+
             this.listenTo(player, 'change:state', this._onPlayerChangeState);
             this.listenTo(player, 'change:loadedSong', this._onPlayerChangeLoadedSong);
         },
         
         play: function(currentTimeHighPrecision) {
-            this.setCurrentTime(currentTimeHighPrecision);
             this.get('video').play();
+            this.setCurrentTime(currentTimeHighPrecision);
         },
         
         setCurrentTime: function(currentTimeHighPrecision) {
@@ -73,7 +77,6 @@
             if (playerState === PlayerState.Playing || playerState === PlayerState.Buffering) {
                 this.play(playerCurrentTimeHighPrecision);
             } else {
-                console.log('pausing, playerCurrentTimeHighPrecision:', playerCurrentTimeHighPrecision);
                 this.setCurrentTime(playerCurrentTimeHighPrecision);
                 this.pause();
             }

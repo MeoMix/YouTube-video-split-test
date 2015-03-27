@@ -26,7 +26,7 @@ define(function(require) {
     $('#loadSecondVideo').click(function() {
         player.set('playOnActivate', true);
         player.activateSong(new Backbone.Model({
-            id: 'jjx2oc2NRzA'
+            id: '6od4WeaWDcs'
         }));
     });
 });

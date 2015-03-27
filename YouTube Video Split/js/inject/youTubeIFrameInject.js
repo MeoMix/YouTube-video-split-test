@@ -3,11 +3,22 @@ window.onerror = function(error) {
     errorsEncountered += error + ' ';
 };
 
+$('body').append('<script src="' + chrome.runtime.getURL('js/inject/interceptor.js') + '"></script>');
+
 $(function() {
     //  Only run against our intended iFrame -- not embedded YouTube iframes on other pages.
     if (window.name === 'youtube-player') {
         var youTubeIFrameConnectRequestPort = chrome.runtime.connect({
             name: 'youTubeIFrameConnectRequest'
+        });
+        
+        youTubeIFrameConnectRequestPort.onMessage.addListener(function(message) {
+            if (message === 'currentTime') {
+                youTubeIFrameConnectRequestPort.postMessage({
+                    timestamp: Date.now(),
+                    currentTime: this.currentTime
+                });
+            }
         });
 
         var monitorVideoStream = function() {
@@ -18,7 +29,9 @@ $(function() {
             //  TimeUpdate has awesome resolution, but we only display to the nearest second.
             //  So, round currentTime and only send a message when the rounded value has changed, not the actual value.
             videoStream.on('timeupdate', function() {
+                console.log('this.currentTime:', this.currentTime);
                 youTubeIFrameConnectRequestPort.postMessage({
+                    timestamp: Date.now(),
                     currentTime: this.currentTime
                 });
             });

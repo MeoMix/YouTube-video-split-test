@@ -213,18 +213,20 @@ define(function(require) {
 
         _onChromeRuntimeConnect: function(port) {
             if (port.name === 'youTubeIFrameConnectRequest') {
-                console.log('connected');
                 port.onMessage.addListener(this._onYouTubeIFrameMessage.bind(this));
+                window.port = port;
             }
         },
 
         _onYouTubeIFrameMessage: function(message) {
-            console.log('iframe msg:', message);
             //  It's better to be told when time updates rather than poll YouTube's API for the currentTime.
             if (!_.isUndefined(message.currentTime)) {
+                var offset = Date.now() - message.timestamp;
+                var currentTimeHighPrecision = message.currentTime + (offset * .001);
+
                 this.set({
-                    currentTimeHighPrecision: message.currentTime,
-                    currentTime: Math.ceil(message.currentTime)
+                    currentTimeHighPrecision: currentTimeHighPrecision,
+                    currentTime: Math.ceil(currentTimeHighPrecision)
                 });
             }
 
@@ -299,6 +301,18 @@ define(function(require) {
             }
 
             return playerState;
+        },
+        
+        getCurrentTimeHighPrecision: function() {
+            window.port.postMessage('currentTime', function(message) {
+                var offset = Date.now() - message.timestamp;
+                var currentTimeHighPrecision = message.currentTime + (offset * .001);
+
+                this.set({
+                    currentTimeHighPrecision: currentTimeHighPrecision,
+                    currentTime: Math.ceil(currentTimeHighPrecision)
+                });
+            });
         }
     });
 

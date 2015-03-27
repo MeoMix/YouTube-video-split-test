@@ -71,10 +71,7 @@
     <Content Include="js\common\enum\youTubePlayerError.js" />
     <Content Include="js\common\enum\youTubePlayerState.js" />
     <Content Include="js\foreground\foreground.js" />
-    <Content Include="js\inject\inline.js" />
-    <Content Include="js\inject\inline2.js" />
-    <Content Include="js\inject\inline3.js" />
-    <Content Include="js\inject\loader.js" />
+    <Content Include="js\inject\interceptor.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

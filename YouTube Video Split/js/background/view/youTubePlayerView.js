@@ -18,7 +18,7 @@
                 title: 'YouTube player',
                 width: 640,
                 height: 360,
-                src: 'https://www.youtube.com/streamus.playground'
+                src: 'https://www.youtube.com/embed/J1Ol6M0d9sg?enablejsapi=1&origin=chrome-extension://' + chrome.runtime.id
             };
         },
 
@@ -35,7 +35,7 @@
             this._onChromeWebRequestCompleted = this._onChromeWebRequestCompleted.bind(this);
             this._onWindowMessage = this._onWindowMessage.bind(this);
 
-            var iframeUrlPattern = 'https://www.youtube.com/streamus.playground';
+            var iframeUrlPattern = '*://*.youtube.com/embed/*?enablejsapi=1&origin=chrome-extension://' + chrome.runtime.id;
 
             chrome.webRequest.onBeforeSendHeaders.addListener(this._onChromeWebRequestBeforeSendHeaders, {
                 urls: [iframeUrlPattern]
@@ -77,17 +77,14 @@
         //  If Internet is lagging or disconnected then _onWebRequestCompleted will not fire.
         //  Even if the Internet is working properly, it's possible to try and load the API before CORS is ready to allow postMessages.
         _onChromeWebRequestCompleted: function() {
-            console.log('request completed');
             chrome.webRequest.onCompleted.removeListener(this._onWebRequestCompleted);
             this.webRequestCompleted = true;
             this._checkLoadModel();
         },
         
         _onWindowMessage: function(message) {
-            console.log('message:', message);
             //  When receiving a message of buffer data from YouTube's API, store it.
             if (message.data && message.data.buffer) {
-                console.log('pushing buffer');
                 this.model.get('buffers').push(message.data.buffer);
             }
         },

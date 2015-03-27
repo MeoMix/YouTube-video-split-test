@@ -58,6 +58,7 @@
             //  TODO: Is it always vp9 codec?
             var sourceBuffer = this.get('source').addSourceBuffer('video/webm; codecs="vp9"');
             this.get('sourceBuffer').attach(sourceBuffer);
+            this.trigger('open');
         },
 
         //  _source.readyState has transitioned from 'open' to 'closed' or from 'ended' to 'closed'

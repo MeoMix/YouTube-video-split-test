@@ -22,7 +22,8 @@
                 maxLoadAttempts: 10,
                 loadAttemptDelay: 6000,
                 currentLoadAttempt: _initialLoadAttempt,
-                loadAttemptInterval: null
+                loadAttemptInterval: null,
+                buffers: []
             };
         },
 
@@ -104,7 +105,6 @@
 
         _loadWidget: function() {
             var iframeId = this.get('iframeId');
-
             //  YouTube's API creates the window.YT object with which widgets can be created.
             //  https://developers.google.com/youtube/iframe_api_reference#Loading_a_Video_Player
             youTubePlayerWidget = new window.YT.Player(iframeId, {
@@ -117,7 +117,6 @@
         },
 
         _onYouTubePlayerReady: function() {
-            console.log('ready');
             //  TODO: It's apparently possible for youTubePlayerWidget.setVolume to be undefined at this point in time. How can I reproduce?
             //  It's important to set ready to true before loading to false otherwise it looks like YouTubePlayer failed to load properly.
             this.set('ready', true);
