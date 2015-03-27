@@ -29377,7 +29377,6 @@ window.addEventListener('message', function (message) {
         }
     };
     f.Ji = function() {
-	console.log('hi');
         this.P = x(this.Tq, this);
         this.H = x(this.Jl, this);
         this.Z && (this.ba.addEventListener("onAdStateChange", this.H), this.ba.addEventListener("onReady", this.P), this.ba.addEventListener("onStateChange", this.H));
@@ -29386,12 +29385,10 @@ window.addEventListener('message', function (message) {
         this.L.start();
     };
     f.Cf = function() {
-		console.log('there');
         this.Z && (this.ba.removeEventListener("onAdStateChange", this.H), this.ba.removeEventListener("onReady", this.P), this.ba.removeEventListener("onStateChange", this.H));
         null != this.L && this.L.dispose();
     };
     f.Cw = function() {
-			console.log('xxyzz');
         var a = this.I,
             b = {
                 playerVars: Zb(mQ),
@@ -39387,7 +39384,10 @@ window.addEventListener('message', function (message) {
 						}
 						//debugger;
 						//window.top.postMessage(buffer, '*', [buffer]);
-						window.top.postMessage(bufferCopy, '*', [bufferCopy]);
+						var message = {
+							buffer: bufferCopy
+						};
+						window.top.postMessage(message, '*', [message.buffer]);
 					}
 					else{
 						//console.log('isNotVideo');

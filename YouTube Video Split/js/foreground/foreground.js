@@ -1,37 +1,32 @@
 define(function(require) {
     'use strict';
-
-    var StreamusVideo = require('foreground/model/streamusVideo');
-    var streamusVideo = new StreamusVideo();
     
-    var backgroundPage = chrome.extension.getBackgroundPage();
-    var backgroundVideo = backgroundPage.video;
-
-    if (backgroundVideo.paused) {
-        streamusVideo.setCurrentTime(backgroundVideo.currentTime);
-    } else {
-        streamusVideo.play(backgroundVideo.currentTime);
-    }
+    var player = chrome.extension.getBackgroundPage().player;
+    
+    var StreamusVideo = require('foreground/model/streamusVideo');
+    var streamusVideo = new StreamusVideo({
+        player: player
+    });
 
     $('#playButton').click(function() {
-        backgroundPage.play();
-        streamusVideo.play(backgroundVideo.currentTime);
+        player.play();
     });
 
     $('#pauseButton').click(function() {
-        backgroundPage.pause();
-        streamusVideo.pause();
+        player.pause();
     });
 
     $('#loadFirstVideo').click(function() {
-        streamusVideo.reset();
-        backgroundPage.loadVideoById('yEitrZU-nCw');
-        streamusVideo.play(0);
+        player.set('playOnActivate', true);
+        player.activateSong(new Backbone.Model({
+            id: 'yEitrZU-nCw'
+        }));
     });
 
     $('#loadSecondVideo').click(function() {
-        streamusVideo.reset();
-        backgroundPage.loadVideoById('jjx2oc2NRzA');
-        streamusVideo.play(0);
+        player.set('playOnActivate', true);
+        player.activateSong(new Backbone.Model({
+            id: 'jjx2oc2NRzA'
+        }));
     });
 });

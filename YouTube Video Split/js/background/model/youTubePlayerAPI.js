@@ -1232,7 +1232,6 @@
             s(Nb, X);
 
             function Y(a, b) {
-                debugger;
                 var c = new Nb(b);
                 O.call(this, a, c, "player");
                 this.A = {};
@@ -1497,7 +1496,6 @@
                 w(a, Sb);
             });
             YTConfig.parsetags && "onload" != YTConfig.parsetags || Wa();
-
             var Ub = l("onYTReady");
             Ub && Ub();
             var Vb = l("onYouTubeIframeAPIReady");

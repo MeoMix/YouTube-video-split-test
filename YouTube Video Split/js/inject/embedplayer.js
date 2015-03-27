@@ -3860,7 +3860,6 @@
     };
 
     function Wh(a, b) {
-	console.log('roooar');
         D.call(this);
         this.B = this.M = a;
         this.W = b;
@@ -4088,7 +4087,6 @@
         if (!this.J()) {
             var c = ai(this, b);
             if (c) {
-			console.log('pow', a);
                 if (!Ha(this.zd, a) && !this.A[a]) {
                     var d = ii(this, a);
                     this.U && this.U(a, d)
@@ -9439,7 +9437,6 @@
         }
     }
     Zp.prototype.Xb = function(a, b) {
-	console.log('yep');
         switch (a) {
             case "onReady":
                 return;
@@ -9515,7 +9512,6 @@
         if (this.A && this.A != this.k.origin) this.dispose();
         else if ("addEventListener" == a && b) {
             var c = b[0];
-			console.log('gogo');
             this.C[c] || "onReady" == c || (this.addEventListener(c, bq(this, c)), this.C[c] = !0)
         } else this.nd(a, b)
     };
@@ -9528,7 +9524,6 @@
     }
     g.addEventListener = function() {};
     g.Id = function() {
-	console.log('hihihi');
         this.F = !0;
         this.sendMessage("initialDelivery", this.Yb());
         this.sendMessage("onReady");
@@ -9559,7 +9554,6 @@
         aq.call(this);
         this.j = a;
         this.o = [];
-		console.log('gogo');
         this.addEventListener("onReady", v(this.je, this));
         this.addEventListener("onVideoProgress", v(this.Ie, this));
         this.addEventListener("onVolumeChange", v(this.Je, this));

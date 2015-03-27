@@ -12,11 +12,7 @@
 	"content_scripts": [{
 		"matches": ["https://www.youtube.com/streamus.playground"],
 		"all_frames": true,
-		"js": ["js/inject/loader.js"]
-	}, {
-		"matches": ["*://*.youtube.com/embed/*?enablejsapi=1&origin=chrome-extension:*"],
-		"all_frames": true,
-		"js": ["js/thirdParty/lodash.js", "js/thirdParty/jquery.js", "js/inject/youTubeIFrameInject.js"]
+		"js": ["js/thirdParty/lodash.js", "js/thirdParty/jquery.js", "js/inject/loader.js", "js/inject/youTubeIFrameInject.js"]
 	}],
 	"web_accessible_resources": [
 		"js/inject/html5player.js",

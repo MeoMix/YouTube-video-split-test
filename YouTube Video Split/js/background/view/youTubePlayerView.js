@@ -33,6 +33,7 @@
             //  which will break chrome's .removeListener method which expects a named function in order to work properly.
             this._onChromeWebRequestBeforeSendHeaders = this._onChromeWebRequestBeforeSendHeaders.bind(this);
             this._onChromeWebRequestCompleted = this._onChromeWebRequestCompleted.bind(this);
+            this._onWindowMessage = this._onWindowMessage.bind(this);
 
             var iframeUrlPattern = 'https://www.youtube.com/streamus.playground';
 
@@ -44,11 +45,14 @@
                 urls: [iframeUrlPattern],
                 types: ['sub_frame']
             });
+
+            window.addEventListener('message', this._onWindowMessage);
         },
 
         onBeforeDestroy: function() {
             chrome.webRequest.onBeforeSendHeaders.removeListener(this._onChromeWebRequestBeforeSendHeaders);
             chrome.webRequest.onCompleted.removeListener(this._onChromeWebRequestCompleted);
+            window.removeEventListener('message', this._onWindowMessage);
         },
 
         //  Add a Referer to requests because Chrome extensions don't implicitly have one.
@@ -73,9 +77,19 @@
         //  If Internet is lagging or disconnected then _onWebRequestCompleted will not fire.
         //  Even if the Internet is working properly, it's possible to try and load the API before CORS is ready to allow postMessages.
         _onChromeWebRequestCompleted: function() {
+            console.log('request completed');
             chrome.webRequest.onCompleted.removeListener(this._onWebRequestCompleted);
             this.webRequestCompleted = true;
             this._checkLoadModel();
+        },
+        
+        _onWindowMessage: function(message) {
+            console.log('message:', message);
+            //  When receiving a message of buffer data from YouTube's API, store it.
+            if (message.data && message.data.buffer) {
+                console.log('pushing buffer');
+                this.model.get('buffers').push(message.data.buffer);
+            }
         },
 
         _checkLoadModel: function() {

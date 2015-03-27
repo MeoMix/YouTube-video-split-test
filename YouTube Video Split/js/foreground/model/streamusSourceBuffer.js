@@ -1,12 +1,11 @@
 ﻿define(function() {
     'use strict';
     
-    var backgroundPage = chrome.extension.getBackgroundPage();
+    var youTubePlayer = chrome.extension.getBackgroundPage().player.get('youTubePlayer');
 
     var StreamusSourceBuffer = Backbone.Model.extend({
         defaults: {
             buffer: null,
-            backgroundBuffers: backgroundPage.buffers,
             appendedBufferCount: 0,
             //  SourceBuffer can only be appended when its parent's MediaSource allows it.
             attached: false
@@ -43,19 +42,20 @@
         },
 
         _tryAppendBuffer: function() {
-            var backgroundBuffers = this.get('backgroundBuffers');
+            var youTubePlayerBuffers = youTubePlayer.get('buffers');
             
-            if (backgroundBuffers.length > this.get('appendedBufferCount')) {
+            if (youTubePlayerBuffers.length > this.get('appendedBufferCount')) {
                 this._appendBuffer();
             } else {
-                Array.observe(backgroundBuffers, this._observeHandler);
+                Array.observe(youTubePlayerBuffers, this._observeHandler);
             }
         },
 
         _appendBuffer: function() {
             if (this._canAppendBuffer()) {
                 var appendedBufferCount = this.get('appendedBufferCount');
-                this.get('buffer').appendBuffer(this.get('backgroundBuffers')[appendedBufferCount]);
+                var youTubePlayerBuffers = youTubePlayer.get('buffers');
+                this.get('buffer').appendBuffer(youTubePlayerBuffers[appendedBufferCount]);
                 this.set('appendedBufferCount', appendedBufferCount + 1);
             }
         },
@@ -66,9 +66,9 @@
 
         _observeHandler: function() {
             //  Monitor backgroundBuffers for added buffers so that the foreground can begin playback.
-            var backgroundBuffers = this.get('backgroundBuffers');
-            if (backgroundBuffers.length > 0) {
-                Array.unobserve(backgroundBuffers, this._observeHandler);
+            var youTubePlayerBuffers = youTubePlayer.get('buffers');
+            if (youTubePlayerBuffers.length > 0) {
+                Array.unobserve(youTubePlayerBuffers, this._observeHandler);
                 this._appendBuffer();
             }
         }
