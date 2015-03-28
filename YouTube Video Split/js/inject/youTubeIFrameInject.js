@@ -16,7 +16,7 @@ $(function() {
             if (message === 'currentTime') {
                 youTubeIFrameConnectRequestPort.postMessage({
                     timestamp: Date.now(),
-                    currentTime: this.currentTime
+                    currentTime: videoStream.currentTime
                 });
             }
         });
