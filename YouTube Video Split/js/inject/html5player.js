@@ -4007,7 +4007,6 @@
     }
 
     function jj(a, b) {
-	
         var c = new XMLHttpRequest;
         c.onreadystatechange = function() {
             4 == c.readyState && 200 == c.status && b(!0);

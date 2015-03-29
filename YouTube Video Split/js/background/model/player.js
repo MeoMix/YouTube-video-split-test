@@ -27,6 +27,7 @@ define(function(require) {
                 muted: false,
                 loadedSong: null,
                 playImmediately: false,
+                iframePort: null,
                 songToActivate: null,
                 youTubePlayer: null
             };
@@ -213,21 +214,37 @@ define(function(require) {
 
         _onChromeRuntimeConnect: function(port) {
             if (port.name === 'youTubeIFrameConnectRequest') {
+                this.set('iframePort', port);
                 port.onMessage.addListener(this._onYouTubeIFrameMessage.bind(this));
-                window.port = port;
             }
         },
 
         _onYouTubeIFrameMessage: function(message) {
             //  It's better to be told when time updates rather than poll YouTube's API for the currentTime.
             if (!_.isUndefined(message.currentTime)) {
-                var offset = Date.now() - message.timestamp;
-                var currentTimeHighPrecision = message.currentTime + (offset * .001);
+                this.set('currentTime', message.currentTime);
+            }
+            
+            if (!_.isUndefined(message.currentTimeHighPrecision)) {
+                var currentTimeHighPrecision;
 
-                this.set({
-                    currentTimeHighPrecision: currentTimeHighPrecision,
-                    currentTime: Math.ceil(currentTimeHighPrecision)
-                });
+                //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
+                //  the information. So, subtract an offset of the time it took to receive the message.
+                if (this.get('state') === PlayerState.Playing) {
+                    var offset = Date.now() - message.timestamp;
+                    currentTimeHighPrecision = message.currentTimeHighPrecision + (offset * .001);
+                } else {
+                    currentTimeHighPrecision = message.currentTimeHighPrecision;
+                }
+
+                console.log('received response:', currentTimeHighPrecision);
+                //  Event listeners may need to know the absolute currentTime. They have no idea if it is current or not.
+                //  If it is current, still notify them.
+                if (this.get('currentTimeHighPrecision') === currentTimeHighPrecision) {
+                    this.trigger('change:currentTimeHighPrecision', this, currentTimeHighPrecision);
+                } else {
+                    this.set('currentTimeHighPrecision', currentTimeHighPrecision);
+                }
             }
 
             //  YouTube's API for seeking/buffering doesn't fire events reliably.
@@ -304,15 +321,8 @@ define(function(require) {
         },
         
         getCurrentTimeHighPrecision: function() {
-            window.port.postMessage('currentTime', function(message) {
-                var offset = Date.now() - message.timestamp;
-                var currentTimeHighPrecision = message.currentTime + (offset * .001);
-
-                this.set({
-                    currentTimeHighPrecision: currentTimeHighPrecision,
-                    currentTime: Math.ceil(currentTimeHighPrecision)
-                });
-            });
+            var iframePort = this.get('iframePort');
+            iframePort.postMessage('getCurrentTimeHighPrecision');
         }
     });
 

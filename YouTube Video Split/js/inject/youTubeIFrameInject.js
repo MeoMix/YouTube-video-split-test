@@ -8,43 +8,53 @@ $('body').append('<script src="' + chrome.runtime.getURL('js/inject/interceptor.
 $(function() {
     //  Only run against our intended iFrame -- not embedded YouTube iframes on other pages.
     if (window.name === 'youtube-player') {
-        var youTubeIFrameConnectRequestPort = chrome.runtime.connect({
+        var port = chrome.runtime.connect({
             name: 'youTubeIFrameConnectRequest'
         });
         
-        youTubeIFrameConnectRequestPort.onMessage.addListener(function(message) {
-            if (message === 'currentTime') {
-                youTubeIFrameConnectRequestPort.postMessage({
+        port.onMessage.addListener(function(message) {
+            if (message === 'getCurrentTimeHighPrecision') {
+                port.postMessage({
                     timestamp: Date.now(),
-                    currentTime: videoStream.currentTime
+                    currentTimeHighPrecision: videoStream[0].currentTime
                 });
             }
         });
 
         var monitorVideoStream = function() {
-            youTubeIFrameConnectRequestPort.postMessage({
+            port.postMessage({
                 flashLoaded: false
+            });
+            
+            var lastPostedCurrentTime = null;
+
+            videoStream.on('loadstart', function() {
+                lastPostedCurrentTime = null;
             });
 
             //  TimeUpdate has awesome resolution, but we only display to the nearest second.
             //  So, round currentTime and only send a message when the rounded value has changed, not the actual value.
             videoStream.on('timeupdate', function() {
-                console.log('this.currentTime:', this.currentTime);
-                youTubeIFrameConnectRequestPort.postMessage({
-                    timestamp: Date.now(),
-                    currentTime: this.currentTime
-                });
+                var currentTime = Math.ceil(this.currentTime);
+
+                if (currentTime !== lastPostedCurrentTime) {
+                    port.postMessage({
+                        currentTime: currentTime
+                    });
+
+                    lastPostedCurrentTime = currentTime;
+                }
             });
 
             //  TODO: I forget why I need this.
             videoStream.on('seeking', function() {
-                youTubeIFrameConnectRequestPort.postMessage({
+                port.postMessage({
                     seeking: true
                 });
             });
 
             videoStream.on('seeked', function() {
-                youTubeIFrameConnectRequestPort.postMessage({
+                port.postMessage({
                     seeking: false
                 });
             });
@@ -59,7 +69,7 @@ $(function() {
         //  If failed to find the videoStream -- keep searching for a bit. Opera loads too early and I guess this might be possible in Chrome, too.
         if (videoStream.length === 0) {
             if (flashStream.length > 0) {
-                youTubeIFrameConnectRequestPort.postMessage({
+                port.postMessage({
                     flashLoaded: true
                 });
             } else {
@@ -67,7 +77,7 @@ $(function() {
                     if (triesRemaining <= 0) {
 
                         clearInterval(findVideoStreamInterval);
-                        youTubeIFrameConnectRequestPort.postMessage({
+                        port.postMessage({
                             error: 'video-stream not found, readystate:' + document.readyState + ' ' + errorsEncountered + ' flash: ' + flashStream.length
                         });
                     } else {
@@ -78,7 +88,7 @@ $(function() {
                             clearInterval(findVideoStreamInterval);
                             monitorVideoStream();
                         } else if (flashStream.length > 0) {
-                            youTubeIFrameConnectRequestPort.postMessage({
+                            port.postMessage({
                                 flashLoaded: true
                             });
                             clearInterval(findVideoStreamInterval);
