@@ -71,6 +71,7 @@
     <Content Include="js\common\enum\youTubePlayerError.js" />
     <Content Include="js\common\enum\youTubePlayerState.js" />
     <Content Include="js\foreground\foreground.js" />
+    <Content Include="js\foreground\view\videoView.js" />
     <Content Include="js\inject\interceptor.js" />
   </ItemGroup>
   <ItemGroup>
@@ -80,7 +81,6 @@
     <Content Include="js\foreground\main.js" />
     <Content Include="js\foreground\model\streamusMediaSource.js" />
     <Content Include="js\foreground\model\streamusSourceBuffer.js" />
-    <Content Include="js\foreground\model\streamusVideo.js" />
     <Content Include="js\inject\youTubeIFrameInject.js" />
     <Content Include="js\thirdParty\backbone.js" />
     <Content Include="js\thirdParty\backbone.marionette.js" />

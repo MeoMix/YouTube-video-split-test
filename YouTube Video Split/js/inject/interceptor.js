@@ -3,15 +3,17 @@
 (function(open) {
     XMLHttpRequest.prototype.open = function() {
         this.addEventListener('load', function() {
-            //  The responseURL will contain 'webm' when video data is being sent. More types of video may need to be supported in the future.
-            var isVideo = this.responseURL.indexOf('webm') !== -1;
+            //  The responseURL will contain 'video/webm' when video data is being sent. More types of video may need to be supported in the future.
+            var isVideo = this.responseURL.indexOf('video%2Fwebm') !== -1;
             
             if (isVideo) {
+                //  TODO: Potentially attach a timestamp to message to ensure proper order.
                 var message = {
                     buffer: this.response.slice(0)
                 };
 
                 //  Be sure to mark the buffer as transferable as it can be a large amount of data.
+                //  TODO: Maybe don't use '*' here for origin.
                 window.top.postMessage(message, '*', [message.buffer]);
             }
         });

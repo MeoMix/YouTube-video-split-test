@@ -3,10 +3,8 @@ define(function(require) {
     
     var player = chrome.extension.getBackgroundPage().player;
     
-    var StreamusVideo = require('foreground/model/streamusVideo');
-    var streamusVideo = new StreamusVideo({
-        player: player
-    });
+    var VideoView = require('foreground/view/videoView');
+    var videoView = new VideoView();
 
     $('#playButton').click(function() {
         player.play();

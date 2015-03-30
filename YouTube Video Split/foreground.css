@@ -4,6 +4,15 @@ body {
 	height: 380px;
 }
 
+.video-container {
+    width: 640px;
+    height: 360px;
+}
+
 video {
     background-color: black;
+    width: 100%;
+    height: 100%;
+    max-width: 960px;
+    max-height: 570px;
 }

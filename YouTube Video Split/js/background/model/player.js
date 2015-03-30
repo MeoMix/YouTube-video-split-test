@@ -8,8 +8,6 @@ define(function(require) {
         defaults: function() {
             return {
                 //  Returns the elapsed time of the currently loaded song. Returns 0 if no song is playing
-                //  High-precision is sync'ed with the <video> element, regular is rounded up to the nearest second.
-                currentTimeHighPrecision: 0,
                 currentTime: 0,
                 //  API will fire a 'ready' event after initialization which indicates the player can now respond accept commands
                 ready: false,
@@ -76,7 +74,6 @@ define(function(require) {
                     //  It's helpful to keep currentTime set here because the progress bar in foreground might be visually set,
                     //  but until the song actually loads -- current time isn't set.
                     currentTime: timeInSeconds || 0,
-                    currentTimeHighPrecision: timeInSeconds || 0,
                     playOnActivate: false,
                     songToActivate: null
                 });
@@ -117,7 +114,6 @@ define(function(require) {
             this.set({
                 loadedSong: null,
                 currentTime: 0,
-                currentTimeHighPrecision: 0,
                 state: PlayerState.Unstarted
             });
         },
@@ -148,8 +144,7 @@ define(function(require) {
                 }
             } else {
                 this.set({
-                    currentTime: timeInSeconds,
-                    currentTimeHighPrecision: timeInSeconds
+                    currentTime: timeInSeconds
                 });
             }
         },
@@ -226,25 +221,9 @@ define(function(require) {
             }
             
             if (!_.isUndefined(message.currentTimeHighPrecision)) {
-                var currentTimeHighPrecision;
-
-                //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
-                //  the information. So, subtract an offset of the time it took to receive the message.
-                if (this.get('state') === PlayerState.Playing) {
-                    var offset = Date.now() - message.timestamp;
-                    currentTimeHighPrecision = message.currentTimeHighPrecision + (offset * .001);
-                } else {
-                    currentTimeHighPrecision = message.currentTimeHighPrecision;
-                }
-
-                console.log('received response:', currentTimeHighPrecision);
                 //  Event listeners may need to know the absolute currentTime. They have no idea if it is current or not.
                 //  If it is current, still notify them.
-                if (this.get('currentTimeHighPrecision') === currentTimeHighPrecision) {
-                    this.trigger('change:currentTimeHighPrecision', this, currentTimeHighPrecision);
-                } else {
-                    this.set('currentTimeHighPrecision', currentTimeHighPrecision);
-                }
+                this.trigger('receive:currentTimeHighPrecision', this, message);
             }
 
             //  YouTube's API for seeking/buffering doesn't fire events reliably.
@@ -320,7 +299,7 @@ define(function(require) {
             return playerState;
         },
         
-        getCurrentTimeHighPrecision: function() {
+        updateCurrentTimeHighPrecision: function() {
             var iframePort = this.get('iframePort');
             iframePort.postMessage('getCurrentTimeHighPrecision');
         }
