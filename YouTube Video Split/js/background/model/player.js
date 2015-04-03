@@ -52,14 +52,12 @@ define(function(require) {
 
         activateSong: function(song, timeInSeconds) {
             if (this.get('ready')) {
-                this.get('youTubePlayer').get('buffers').length = 0;
-
                 var playerState = this.get('state');
                 var playOnActivate = this.get('playOnActivate');
 
                 var videoOptions = {
                     videoId: song.get('id'),
-                    startSeconds: timeInSeconds || 0,
+                    startSeconds: timeInSeconds || 0
                 };
 
                 //  TODO: I don't think I *always* want to keep the player going if a song is activated while one is playing, but maybe...

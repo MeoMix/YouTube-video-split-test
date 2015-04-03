@@ -1,6 +1,6 @@
 define(function(require) {
     'use strict';
-    
+
     var player = chrome.extension.getBackgroundPage().player;
     
     var VideoView = require('foreground/view/videoView');
@@ -17,7 +17,7 @@ define(function(require) {
     $('#loadFirstVideo').click(function() {
         player.set('playOnActivate', true);
         player.activateSong(new Backbone.Model({
-            id: 'yEitrZU-nCw'
+            id: 'iaDFo7hbCKs'
         }));
     });
 

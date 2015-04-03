@@ -86,6 +86,7 @@
             //  When receiving a message of buffer data from YouTube's API, store it.
             if (message.data && message.data.buffer) {
                 this.model.get('buffers').push(message.data.buffer);
+                this.model.set('type', message.data.type);
             }
         },
 

@@ -1,25 +1,25 @@
 ﻿define(function(require) {
     'use strict';
-    
+
     var StreamusMediaSource = require('foreground/model/streamusMediaSource');
     var PlayerState = require('common/enum/playerState');
-    
+
     var VideoView = Marionette.ItemView.extend({
         el: '#streamusVideo',
-        
+
         mediaSource: null,
         player: null,
-        
+
         playerEvents: {
             'change:state': '_onPlayerChangeState',
             'change:loadedSong': '_onPlayerChangeLoadedSong',
             'receive:currentTimeHighPrecision': '_onPlayerReceiveCurrentTimeHighPrecision'
         },
-        
+
         mediaSourceEvents: {
             'change:objectURL': '_onMediaSourceChangeObjectURL'
         },
-        
+
         initialize: function() {
             this.mediaSource = new StreamusMediaSource();
             this.player = chrome.extension.getBackgroundPage().player;
@@ -31,28 +31,28 @@
             this._onWindowUnload = this._onWindowUnload.bind(this);
             window.addEventListener('unload', this._onWindowUnload);
 
-            this.mediaSource.attachBuffer();
+            //this.mediaSource.attachBuffer();
             this._ensureInitialState(this.player.get('state'));
         },
-        
+
         _onPlayerChangeState: function(model, state) {
             this._syncState(state);
         },
 
-        _onPlayerChangeLoadedSong: function() {
+        _onPlayerChangeLoadedSong: function () {
             this._reset();
         },
-        
+
         _onPlayerReceiveCurrentTimeHighPrecision: function(model, message) {
             var currentTimeHighPrecision = message.currentTimeHighPrecision;
-            
+
             //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
             //  the information. So, subtract an offset of the time it took to receive the message.
             if (model.get('state') === PlayerState.Playing) {
                 var offset = Date.now() - message.timestamp;
                 currentTimeHighPrecision -= offset * .001;
             }
-            
+
             this.el.currentTime = currentTimeHighPrecision;
         },
 
@@ -82,7 +82,7 @@
             //  It's important to call syncCurrentTime when beginning playback because there's a slight delay between
             //  when the video in the background begins playback and the foreground video.
             this._syncCurrentTime();
-            
+
             this.el.play();
         },
 
