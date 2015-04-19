@@ -1,8 +1,6 @@
 define(function(require) {
     'use strict';
 
-    chrome.extension.getBackgroundPage().console.log('initialized');
-
     var player = chrome.extension.getBackgroundPage().player;
     
     var VideoView = require('foreground/view/videoView');

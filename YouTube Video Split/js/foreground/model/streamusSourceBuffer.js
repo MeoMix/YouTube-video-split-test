@@ -3,7 +3,6 @@
 
     var StreamusSourceBuffer = Backbone.Model.extend({
         defaults: function () {
-            chrome.extension.getBackgroundPage().console.log('extra');
             return {
                 buffer: null,
                 appendedBufferCount: 0,
@@ -52,7 +51,6 @@
         },
 
         _onUpdate: function () {
-            chrome.extension.getBackgroundPage().console.log('onUpdate is firing');
             this._tryAppendBuffer();
         },
 
@@ -60,7 +58,6 @@
             //  It's important to call unobserve on playerBuffers because playerBuffers originates from the background page.
             //  Without this, a memory leak is formed and _observeHandler can fire without an existing foreground page.
             Array.unobserve(this.get('playerBuffers'), this._observeHandler);
-            chrome.extension.getBackgroundPage().console.log('unobserved my array buffers');
         },
 
         _tryAppendBuffer: function() {
@@ -85,7 +82,6 @@
         },
 
         _canAppendBuffer: function () {
-            chrome.extension.getBackgroundPage().console.log('canAppendBuffer?', this.get('attached'));
             var canAppendBuffer = this.get('attached') && !this.get('buffer').updating;
             return canAppendBuffer;
         },

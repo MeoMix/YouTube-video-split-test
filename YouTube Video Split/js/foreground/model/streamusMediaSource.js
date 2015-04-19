@@ -83,7 +83,6 @@
             var sourceBuffer = this.get('sourceBuffer');
 
             if (sourceBuffer !== null) {
-                //chrome.extension.getBackgroundPage().console.log('sourceBuffer:', sourceBuffer.get('buffer'), this.get('source'));
                 this.get('source').removeSourceBuffer(sourceBuffer.get('buffer'));
                 //  Setting objectURL to null will cause _onSourceClose to fire because the video element's src is cleared.
                 this.set('objectURL', null);
