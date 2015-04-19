@@ -33,7 +33,6 @@
             //  which will break chrome's .removeListener method which expects a named function in order to work properly.
             this._onChromeWebRequestBeforeSendHeaders = this._onChromeWebRequestBeforeSendHeaders.bind(this);
             this._onChromeWebRequestCompleted = this._onChromeWebRequestCompleted.bind(this);
-            this._onWindowMessage = this._onWindowMessage.bind(this);
 
             var iframeUrlPattern = '*://*.youtube.com/embed/*?enablejsapi=1&origin=chrome-extension://' + chrome.runtime.id;
 
@@ -45,14 +44,11 @@
                 urls: [iframeUrlPattern],
                 types: ['sub_frame']
             });
-
-            window.addEventListener('message', this._onWindowMessage);
         },
 
         onBeforeDestroy: function() {
             chrome.webRequest.onBeforeSendHeaders.removeListener(this._onChromeWebRequestBeforeSendHeaders);
             chrome.webRequest.onCompleted.removeListener(this._onChromeWebRequestCompleted);
-            window.removeEventListener('message', this._onWindowMessage);
         },
 
         //  Add a Referer to requests because Chrome extensions don't implicitly have one.
@@ -80,14 +76,6 @@
             chrome.webRequest.onCompleted.removeListener(this._onWebRequestCompleted);
             this.webRequestCompleted = true;
             this._checkLoadModel();
-        },
-        
-        _onWindowMessage: function(message) {
-            //  When receiving a message of buffer data from YouTube's API, store it.
-            if (message.data && message.data.buffer) {
-                this.model.get('buffers').push(message.data.buffer);
-                this.model.set('type', message.data.type);
-            }
         },
 
         _checkLoadModel: function() {

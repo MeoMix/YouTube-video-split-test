@@ -18,7 +18,7 @@ define(function(require) {
                 state: PlayerState.Unstarted,
                 //  This will be set after the player is ready and can communicate its true value.
                 //  Default to 50 because having the music on and audible, but not blasting, seems like the best default if we fail for some reason.
-                volume: 50,
+                volume: 1,
                 maxVolume: 100,
                 minVolume: 0,
                 //  This will be set after the player is ready and can communicate its true value.
@@ -26,6 +26,8 @@ define(function(require) {
                 loadedSong: null,
                 playImmediately: false,
                 iframePort: null,
+                buffers: [],
+                bufferType: '',
                 songToActivate: null,
                 youTubePlayer: null
             };
@@ -45,6 +47,8 @@ define(function(require) {
             this.listenTo(this.get('youTubePlayer'), 'change:currentLoadAttempt', this._onYouTubePlayerChangeCurrentLoadAttempt);
             //this.listenTo(Streamus.channels.player.commands, 'playOnActivate', this._playOnActivate);
 
+            window.addEventListener('message', this._onWindowMessage.bind(this));
+
             chrome.runtime.onConnect.addListener(this._onChromeRuntimeConnect.bind(this));
 
             this._ensureInitialState();
@@ -60,6 +64,7 @@ define(function(require) {
                     startSeconds: timeInSeconds || 0
                 };
 
+                this._resetMetaData();
                 //  TODO: I don't think I *always* want to keep the player going if a song is activated while one is playing, but maybe...
                 if (playOnActivate || playerState === PlayerState.Playing || playerState === PlayerState.Buffering) {
                     this.get('youTubePlayer').loadVideoById(videoOptions);
@@ -261,6 +266,15 @@ define(function(require) {
         _onYouTubePlayerError: function(model, error) {
             this.trigger('youTubeError', this, error);
         },
+
+        _onWindowMessage: function (message) {
+            //  When receiving a message of buffer data from YouTube's API, store it.
+            //  TODO: Clear this when switching to SoundCloud.
+            if (message.data && message.data.buffer) {
+                this.get('buffers').push(message.data.buffer);
+                this.set('bufferType', message.data.bufferType);
+            }
+        },
         
         _playOnActivate: function(playOnActivate) {
             this.set('playOnActivate', playOnActivate);
@@ -295,6 +309,18 @@ define(function(require) {
             }
 
             return playerState;
+        },
+
+        //  Some video information is stored on YouTubePlayer for a per-video basis
+        //  This information should be discarded whenever the video changes.
+        _resetMetaData: function () {
+            this.get('buffers').length = 0;
+            //  NOTE: It's technically possible to squeeze a bit of extra performance out of MediaSource by not clearing bufferType here.
+            //  Instead, one could keep track of the 'lastKnownBufferType' and only call addSourceBuffer when the bufferType changes.
+            //  HOWEVER, knowledge of a video's bufferType arrives after the 'loadedVideoId' event fires. This leads to complications where a 
+            //  MediaSource attempts to use one bufferType for a video only to find out that the bufferType is incorrect a moment later.
+            //  So, I'm clearing the bufferType every time the video changes to prevent this confusion, but at the cost of a small perf. hit.
+            this.set('bufferType', '');
         },
         
         updateCurrentTimeHighPrecision: function() {

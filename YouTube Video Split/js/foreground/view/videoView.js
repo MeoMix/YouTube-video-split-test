@@ -8,19 +8,18 @@
         el: '#streamusVideo',
 
         mediaSource: null,
-        player: null,
-
-        playerEvents: {
-            'change:state': '_onPlayerChangeState',
-            'change:loadedSong': '_onPlayerChangeLoadedSong',
-            'receive:currentTimeHighPrecision': '_onPlayerReceiveCurrentTimeHighPrecision'
-        },
-
         mediaSourceEvents: {
             'change:objectURL': '_onMediaSourceChangeObjectURL'
         },
 
-        initialize: function() {
+        player: null,
+        playerEvents: {
+            'change:state': '_onPlayerChangeState',
+            'receive:currentTimeHighPrecision': '_onPlayerReceiveCurrentTimeHighPrecision',
+            'change:bufferType': '_onPlayerChangeBufferType'
+        },
+
+        initialize: function () {
             this.mediaSource = new StreamusMediaSource();
             this.player = chrome.extension.getBackgroundPage().player;
 
@@ -31,24 +30,19 @@
             this._onWindowUnload = this._onWindowUnload.bind(this);
             window.addEventListener('unload', this._onWindowUnload);
 
-            //this.mediaSource.attachBuffer();
-            this._ensureInitialState(this.player.get('state'));
+            this._ensureInitialState(this.player.get('state'), this.player.get('bufferType'));
         },
 
-        _onPlayerChangeState: function(model, state) {
+        _onPlayerChangeState: function (player, state) {
             this._syncState(state);
         },
 
-        _onPlayerChangeLoadedSong: function () {
-            this._reset();
-        },
-
-        _onPlayerReceiveCurrentTimeHighPrecision: function(model, message) {
+        _onPlayerReceiveCurrentTimeHighPrecision: function (player, message) {
             var currentTimeHighPrecision = message.currentTimeHighPrecision;
 
             //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
             //  the information. So, subtract an offset of the time it took to receive the message.
-            if (model.get('state') === PlayerState.Playing) {
+            if (player.get('state') === PlayerState.Playing) {
                 var offset = Date.now() - message.timestamp;
                 currentTimeHighPrecision -= offset * .001;
             }
@@ -56,19 +50,22 @@
             this.el.currentTime = currentTimeHighPrecision;
         },
 
-        _onMediaSourceChangeObjectURL: function(model, objectURL) {
+        _onMediaSourceChangeObjectURL: function(mediaSource, objectURL) {
             this._setVideoSrc(objectURL);
         },
 
+        _onPlayerChangeBufferType: function (player, bufferType) {
+            this.mediaSource.set('bufferType', bufferType);
+        },
+
         _onWindowUnload: function() {
-            //  TODO: I feel like I shouldn't have to call this because if the foreground is destroyed then everything should be cleaned up.
-            //  However, due to a memory leak in Chrome, https://code.google.com/p/chromium/issues/detail?id=441500, this is needed. Review once Chrome 42 is standard.
-            this.mediaSource.detachBuffer();
             this.stopListening();
         },
 
         //  Whenever a video is created its time/state might not be synced with an existing video.
-        _ensureInitialState: function(playerState) {
+        _ensureInitialState: function (playerState, playerBufferType) {
+            //  TODO: It's worth considering having mediaSource set this value itself rather than videoView, but then it would couple mediaSource and player together..
+            this.mediaSource.set('bufferType', playerBufferType);
             this._syncCurrentTime();
             this._syncState(playerState);
         },
@@ -88,11 +85,6 @@
 
         _pause: function() {
             this.el.pause();
-        },
-
-        _reset: function() {
-            this.mediaSource.detachBuffer();
-            this.mediaSource.attachBuffer();
         },
 
         _syncCurrentTime: function() {

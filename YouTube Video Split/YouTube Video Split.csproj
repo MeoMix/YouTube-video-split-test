@@ -67,6 +67,7 @@
     <Content Include="js\background\model\youTubePlayer.js" />
     <Content Include="js\background\model\youTubePlayerAPI.js" />
     <Content Include="js\background\view\youTubePlayerView.js" />
+    <Content Include="js\common\enum\mediaSourceReadyState.js" />
     <Content Include="js\common\enum\playerState.js" />
     <Content Include="js\common\enum\youTubePlayerError.js" />
     <Content Include="js\common\enum\youTubePlayerState.js" />

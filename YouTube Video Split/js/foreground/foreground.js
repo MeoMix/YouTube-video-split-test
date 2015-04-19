@@ -1,6 +1,8 @@
 define(function(require) {
     'use strict';
 
+    chrome.extension.getBackgroundPage().console.log('initialized');
+
     var player = chrome.extension.getBackgroundPage().player;
     
     var VideoView = require('foreground/view/videoView');
@@ -17,7 +19,9 @@ define(function(require) {
     $('#loadFirstVideo').click(function() {
         player.set('playOnActivate', true);
         player.activateSong(new Backbone.Model({
-            id: 'iaDFo7hbCKs'
+            //  This is an mp4 video with avc1 codec
+            id: '6teOmBuMxw4'
+            //id: 'iaDFo7hbCKs'
         }));
     });
 

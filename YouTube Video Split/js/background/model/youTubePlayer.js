@@ -22,9 +22,7 @@
                 maxLoadAttempts: 10,
                 loadAttemptDelay: 6000,
                 currentLoadAttempt: _initialLoadAttempt,
-                loadAttemptInterval: null,
-                buffers: [],
-                type: ''
+                loadAttemptInterval: null
             };
         },
 
@@ -97,20 +95,11 @@
         },
 
         loadVideoById: function (videoOptions) {
-            this._resetMetaData();
             youTubePlayerWidget.loadVideoById(videoOptions);
         },
 
         cueVideoById: function (videoOptions) {
-            this._resetMetaData();
             youTubePlayerWidget.cueVideoById(videoOptions);
-        },
-
-        //  Some video information is stored on YouTubePlayer for a per-video basis
-        //  This information should be discarded whenever the video changes.
-        _resetMetaData: function () {
-            this.get('buffers').length = 0;
-            this.set('type', '');
         },
 
         _loadWidget: function() {

@@ -55,7 +55,7 @@
                             //  The type of video (including codec) as well as the ArrayBuffer of video data.
                             var message = {
                                 buffer: this.response.slice(0),
-                                type: videoInfo.type
+                                bufferType: videoInfo.type
                             };
 
                             //  Be sure to mark the buffer as transferable as it can be a large amount of data.
