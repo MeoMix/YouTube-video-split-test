@@ -323,7 +323,8 @@ define(function(require) {
             this.set('bufferType', '');
         },
         
-        updateCurrentTimeHighPrecision: function() {
+        //  Send a message to YouTube's iframe to figure out what the current time is of the video element inside of the iframe.
+        requestCurrentTimeHighPrecision: function() {
             var iframePort = this.get('iframePort');
             iframePort.postMessage('getCurrentTimeHighPrecision');
         }

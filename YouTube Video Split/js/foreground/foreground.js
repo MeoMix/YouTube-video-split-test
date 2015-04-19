@@ -2,7 +2,7 @@ define(function(require) {
     'use strict';
 
     var player = chrome.extension.getBackgroundPage().player;
-    
+
     var VideoView = require('foreground/view/videoView');
     var videoView = new VideoView();
 

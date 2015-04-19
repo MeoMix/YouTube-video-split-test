@@ -14,12 +14,12 @@
 
         player: null,
         playerEvents: {
+            'change:bufferType': '_onPlayerChangeBufferType',
             'change:state': '_onPlayerChangeState',
-            'receive:currentTimeHighPrecision': '_onPlayerReceiveCurrentTimeHighPrecision',
-            'change:bufferType': '_onPlayerChangeBufferType'
+            'receive:currentTimeHighPrecision': '_onPlayerReceiveCurrentTimeHighPrecision'
         },
 
-        initialize: function () {
+        initialize: function() {
             this.mediaSource = new StreamusMediaSource();
             this.player = chrome.extension.getBackgroundPage().player;
 
@@ -33,28 +33,19 @@
             this._ensureInitialState(this.player.get('state'), this.player.get('bufferType'));
         },
 
-        _onPlayerChangeState: function (player, state) {
-            this._syncState(state);
+        _onPlayerChangeState: function(player, state) {
+            this._syncPlayingState(state);
         },
 
-        _onPlayerReceiveCurrentTimeHighPrecision: function (player, message) {
-            var currentTimeHighPrecision = message.currentTimeHighPrecision;
-
-            //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
-            //  the information. So, subtract an offset of the time it took to receive the message.
-            if (player.get('state') === PlayerState.Playing) {
-                var offset = Date.now() - message.timestamp;
-                currentTimeHighPrecision -= offset * .001;
-            }
-
-            this.el.currentTime = currentTimeHighPrecision;
+        _onPlayerReceiveCurrentTimeHighPrecision: function(player, message) {
+            this._setCurrentTime(player.get('state'), message.currentTimeHighPrecision, message.timestamp);
         },
 
         _onMediaSourceChangeObjectURL: function(mediaSource, objectURL) {
             this._setVideoSrc(objectURL);
         },
 
-        _onPlayerChangeBufferType: function (player, bufferType) {
+        _onPlayerChangeBufferType: function(player, bufferType) {
             this.mediaSource.set('bufferType', bufferType);
         },
 
@@ -65,11 +56,10 @@
         },
 
         //  Whenever a video is created its time/state might not be synced with an existing video.
-        _ensureInitialState: function (playerState, playerBufferType) {
-            //  TODO: It's worth considering having mediaSource set this value itself rather than videoView, but then it would couple mediaSource and player together..
+        _ensureInitialState: function(playerState, playerBufferType) {
             this.mediaSource.set('bufferType', playerBufferType);
-            this._syncCurrentTime();
-            this._syncState(playerState);
+            this._requestCurrentTimeUpdate();
+            this._syncPlayingState(playerState);
         },
 
         _setVideoSrc: function(objectURL) {
@@ -80,8 +70,7 @@
         _play: function() {
             //  It's important to call syncCurrentTime when beginning playback because there's a slight delay between
             //  when the video in the background begins playback and the foreground video.
-            this._syncCurrentTime();
-
+            this._requestCurrentTimeUpdate();
             this.el.play();
         },
 
@@ -89,13 +78,24 @@
             this.el.pause();
         },
 
-        _syncCurrentTime: function() {
+        _requestCurrentTimeUpdate: function() {
             //  It's important to specifically ask the player for the currentTime because this will give 100% accurate result.
             //  Otherwise, can only get within ~200ms by responding to the 'timeupdate' event of the other video. 
-            this.player.updateCurrentTimeHighPrecision();
+            this.player.requestCurrentTimeHighPrecision();
         },
 
-        _syncState: function(playerState) {
+        _setCurrentTime: function(playerState, currentTimeHighPrecision, timestamp) {
+            //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
+            //  the information. So, subtract an offset of the time it took to receive the message.
+            if (playerState === PlayerState.Playing) {
+                var offset = Date.now() - timestamp;
+                currentTimeHighPrecision -= offset * .001;
+            }
+
+            this.el.currentTime = currentTimeHighPrecision;
+        },
+
+        _syncPlayingState: function(playerState) {
             if (playerState === PlayerState.Playing) {
                 this._play();
             } else {
