@@ -1,10 +1,9 @@
 define(function(require) {
     'use strict';
 
-    var player = chrome.extension.getBackgroundPage().player;
-
     var VideoView = require('foreground/view/videoView');
     var videoView = new VideoView();
+    var player = chrome.extension.getBackgroundPage().player;
 
     $('#playButton').click(function() {
         player.play();
@@ -19,13 +18,13 @@ define(function(require) {
         player.activateSong(new Backbone.Model({
             //  This is an mp4 video with avc1 codec
             id: '6teOmBuMxw4'
-            //id: 'iaDFo7hbCKs'
         }));
     });
 
     $('#loadSecondVideo').click(function() {
         player.set('playOnActivate', true);
         player.activateSong(new Backbone.Model({
+            //  This is a webm video with vp9 codec
             id: '6od4WeaWDcs'
         }));
     });

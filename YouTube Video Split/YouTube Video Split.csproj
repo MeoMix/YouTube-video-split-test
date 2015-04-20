@@ -67,7 +67,6 @@
     <Content Include="js\background\model\youTubePlayer.js" />
     <Content Include="js\background\model\youTubePlayerAPI.js" />
     <Content Include="js\background\view\youTubePlayerView.js" />
-    <Content Include="js\common\enum\mediaSourceReadyState.js" />
     <Content Include="js\common\enum\playerState.js" />
     <Content Include="js\common\enum\youTubePlayerError.js" />
     <Content Include="js\common\enum\youTubePlayerState.js" />
@@ -80,8 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="js\foreground\main.js" />
-    <Content Include="js\foreground\model\streamusMediaSource.js" />
-    <Content Include="js\foreground\model\streamusSourceBuffer.js" />
+    <Content Include="js\foreground\model\mediaSourceWrapper.js" />
+    <Content Include="js\foreground\model\sourceBufferWrapper.js" />
     <Content Include="js\inject\youTubeIFrameInject.js" />
     <Content Include="js\thirdParty\backbone.js" />
     <Content Include="js\thirdParty\backbone.marionette.js" />

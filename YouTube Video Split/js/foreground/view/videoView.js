@@ -1,15 +1,15 @@
 ﻿define(function(require) {
     'use strict';
 
-    var StreamusMediaSource = require('foreground/model/streamusMediaSource');
+    var MediaSourceWrapper = require('foreground/model/mediaSourceWrapper');
     var PlayerState = require('common/enum/playerState');
 
     var VideoView = Marionette.ItemView.extend({
         el: '#streamusVideo',
 
-        mediaSource: null,
-        mediaSourceEvents: {
-            'change:objectURL': '_onMediaSourceChangeObjectURL'
+        mediaSourceWrapper: null,
+        mediaSourceWrapperEvents: {
+            'change:objectURL': '_onMediaSourceWrapperChangeObjectURL'
         },
 
         player: null,
@@ -19,12 +19,12 @@
             'receive:currentTimeHighPrecision': '_onPlayerReceiveCurrentTimeHighPrecision'
         },
 
-        initialize: function() {
-            this.mediaSource = new StreamusMediaSource();
+        initialize: function () {
+            this.mediaSourceWrapper = new MediaSourceWrapper();
             this.player = chrome.extension.getBackgroundPage().player;
 
             this.bindEntityEvents(this.player, this.playerEvents);
-            this.bindEntityEvents(this.mediaSource, this.mediaSourceEvents);
+            this.bindEntityEvents(this.mediaSourceWrapper, this.mediaSourceWrapperEvents);
 
             //  Bind pre-emptively to preserve the function reference. Allows for calling removeEventListener if needed.
             this._onWindowUnload = this._onWindowUnload.bind(this);
@@ -41,23 +41,23 @@
             this._setCurrentTime(player.get('state'), message.currentTimeHighPrecision, message.timestamp);
         },
 
-        _onMediaSourceChangeObjectURL: function(mediaSource, objectURL) {
+        _onMediaSourceWrapperChangeObjectURL: function (mediaSourceWrapper, objectURL) {
             this._setVideoSrc(objectURL);
         },
 
         _onPlayerChangeBufferType: function(player, bufferType) {
-            this.mediaSource.set('bufferType', bufferType);
+            this.mediaSourceWrapper.set('bufferType', bufferType);
         },
 
         _onWindowUnload: function() {
             this.stopListening();
             this.unbindEntityEvents(this.player, this.playerEvents);
-            this.unbindEntityEvents(this.mediaSource, this.mediaSourceEvents);
+            this.unbindEntityEvents(this.mediaSourceWrapper, this.mediaSourceWrapperEvents);
         },
 
         //  Whenever a video is created its time/state might not be synced with an existing video.
         _ensureInitialState: function(playerState, playerBufferType) {
-            this.mediaSource.set('bufferType', playerBufferType);
+            this.mediaSourceWrapper.set('bufferType', playerBufferType);
             this._requestCurrentTimeUpdate();
             this._syncPlayingState(playerState);
         },
