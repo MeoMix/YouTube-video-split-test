@@ -45,14 +45,15 @@
             this._setVideoSrc(objectURL);
         },
 
-        _onPlayerChangeBufferType: function(player, bufferType) {
+        _onPlayerChangeBufferType: function (player, bufferType) {
+            chrome.extension.getBackgroundPage().console.log('hello, world.');
             this.mediaSourceWrapper.set('bufferType', bufferType);
         },
 
         _onWindowUnload: function() {
             this.stopListening();
-            this.unbindEntityEvents(this.player, this.playerEvents);
-            this.unbindEntityEvents(this.mediaSourceWrapper, this.mediaSourceWrapperEvents);
+            //this.unbindEntityEvents(this.player, this.playerEvents);
+            //this.unbindEntityEvents(this.mediaSourceWrapper, this.mediaSourceWrapperEvents);
         },
 
         //  Whenever a video is created its time/state might not be synced with an existing video.
