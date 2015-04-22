@@ -51,8 +51,6 @@
 
         _onWindowUnload: function() {
             this.stopListening();
-            this.unbindEntityEvents(this.player, this.playerEvents);
-            this.unbindEntityEvents(this.mediaSourceWrapper, this.mediaSourceWrapperEvents);
         },
 
         //  Whenever a video is created its time/state might not be synced with an existing video.
