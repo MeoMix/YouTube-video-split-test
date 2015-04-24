@@ -21,6 +21,12 @@
             this.on('change:sourceBuffer', this._onChangeSourceBuffer);
         },
 
+        //  Called only before removing all references to the model - prevents memory leaks
+        cleanup: function() {
+            window.removeEventListener('unload', this._onWindowUnload);
+            this.set('sourceBuffer', null);
+        },
+
         _onChangeSourceBuffer: function (model, sourceBuffer) {
             if (sourceBuffer === null) {
                 var previousSourceBuffer = this.previous('sourceBuffer');

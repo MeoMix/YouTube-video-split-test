@@ -33,6 +33,11 @@
             this._ensureInitialState(this.player.get('state'), this.player.get('bufferType'));
         },
 
+        onBeforeDestroy: function() {
+            window.removeEventListener('unload', this._onWindowUnload);
+            this.mediaSourceWrapper.cleanup();
+        },
+
         _onPlayerChangeState: function(player, state) {
             this._syncPlayingState(state);
         },

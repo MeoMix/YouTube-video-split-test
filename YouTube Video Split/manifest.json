@@ -12,7 +12,8 @@
 	"content_scripts": [{
 		"matches": ["*://*.youtube.com/embed/*?enablejsapi=1&origin=chrome-extension:*"],
 		"all_frames": true,
-		"js": ["js/thirdParty/lodash.js", "js/thirdParty/jquery.js", "js/inject/youTubeIFrameInject.js"]
+		"run_at": "document_start",
+		"js": ["js/inject/youTubeIFrameInject.js"]
 	}],
 	"web_accessible_resources": [
 		"js/inject/interceptor.js"

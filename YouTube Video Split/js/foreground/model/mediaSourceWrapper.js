@@ -30,6 +30,15 @@
             this.on('change:bufferType', this._onChangeBufferType);
         },
 
+        cleanup: function() {
+            var mediaSource = this.get('mediaSource');
+            mediaSource.removeEventListener('sourceopen', this._onSourceOpen);
+            mediaSource.removeEventListener('sourceclose', this._onSourceClose);
+            mediaSource.removeEventListener('sourceended', this._onSourceEnded);
+
+            this._detachBuffer();
+        },
+
         _onChangeBufferType: function(model, bufferType) {
             this._setBuffer(bufferType);
         },
@@ -94,8 +103,12 @@
 
         //  Only detach a buffer from a MediaSource which is 'closed' or 'ended'.
         _detachBuffer: function() {
-            this.get('sourceBufferWrapper').set('sourceBuffer', null);
-            this.set('sourceBufferWrapper', null);
+            var sourceBufferWrapper = this.get('sourceBufferWrapper');
+
+            if (sourceBufferWrapper !== null) {
+                sourceBufferWrapper.cleanup();
+                this.set('sourceBufferWrapper', null);
+            }
         }
     });
 
