@@ -5,7 +5,7 @@
     var PlayerState = require('common/enum/playerState');
 
     var VideoView = Marionette.ItemView.extend({
-        el: '#streamusVideo',
+        el: '#video',
 
         mediaSourceWrapper: null,
         mediaSourceWrapperEvents: {
@@ -91,7 +91,7 @@
             //  If the player is playing then currentTimeHighPrecision will be slightly out-of-sync due to the time it takes to request
             //  the information. So, subtract an offset of the time it took to receive the message.
             if (playerState === PlayerState.Playing) {
-                var offset = Date.now() - timestamp;
+                var offset = performance.now() - timestamp;
                 currentTimeHighPrecision -= offset * .001;
             }
 

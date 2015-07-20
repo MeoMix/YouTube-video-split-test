@@ -52,7 +52,7 @@
                         })[0];
 
                         if (videoInfo) {
-                            //  Notify Streamus of video information data necessary to render the video on another page.
+                            //  Notify background of video information data necessary to render the video on another page.
                             //  The type of video (including codec) as well as the ArrayBuffer of video data.
                             var message = {
                                 buffer: this.response.slice(0),

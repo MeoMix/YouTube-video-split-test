@@ -10,7 +10,6 @@
         load: function() {
             if (this.get('inserted')) {
                 var error = new Error('API script already inserted');
-                //Streamus.channels.error.commands.trigger('log:error', error);
                 return;
             }
 
