@@ -1,25 +1,25 @@
 ﻿require.config({
-    baseUrl: 'js/',
-    enforceDefine: true,
+  baseUrl: 'js/',
+  enforceDefine: true,
 
-    paths: {
-        'backbone': 'thirdParty/backbone',
-        'backbone.marionette': 'thirdParty/backbone.marionette',
-        'jquery': 'thirdParty/jquery',
-        'lodash': 'thirdParty/lodash'
-    },
+  paths: {
+    'backbone': 'lib/backbone',
+    'backbone.marionette': 'lib/backbone.marionette',
+    'jquery': 'lib/jquery',
+    'lodash': 'lib/lodash'
+  },
 
-    map: {
-        '*': {
-            'underscore': 'lodash'
-        }
+  map: {
+    '*': {
+      'underscore': 'lodash'
     }
+  }
 });
 
 define(function(require) {
-    'use strict';
+  'use strict';
 
-    require('backbone.marionette');
+  require('backbone.marionette');
 
-    require(['foreground/foreground']);
+  require(['foreground/foreground']);
 });
