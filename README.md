@@ -9,4 +9,4 @@ TO RUN THIS CODE:
 - Click 'Load unpacked extension...'
 - Select the directory containing 'manifest.json'
 
-This will load the example extension. Then, click the icon in the upper-right hand corner of your browser and click 'Load video one' or 'Load video two'
+This will load the example extension. Then, click the icon in the upper-right hand corner of your browser and click 'Load first one' or 'Load second video' from the UI shown.
